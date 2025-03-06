@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { delay } from './utils'
 
 export interface Employee {
   id: number
@@ -28,7 +29,11 @@ export const useEmployeeStore = defineStore('employee', {
       this.error = null
       try {
         const response = await fetch('/data.json')
-        if (!response.ok) throw new Error('Ошибка загрузки данных')
+        await delay(2000)
+
+        if (!response.ok) 
+          throw new Error('Ошибка загрузки данных')
+
         this.employees = await response.json()
       } catch (error) {
         this.error = error instanceof Error ? error.message : 'Неизвестная ошибка'
@@ -42,7 +47,7 @@ export const useEmployeeStore = defineStore('employee', {
     filteredEmployees(state): Employee[] {
       const query = state.searchQuery.toLowerCase()
       return state.employees.filter(employee =>
-        `${employee.firstName} ${employee.lastName} ${employee.middleName}`
+        `${employee.lastName} ${employee.firstName} ${employee.middleName}`
           .toLowerCase().includes(query)
       )
     },
